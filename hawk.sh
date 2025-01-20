@@ -5,12 +5,62 @@
 # Saves results to a single file: Output.txt
 
 # Configuration
-OTX_API_KEY="your-otx-api-key"
+CONFIG_FILE="$HOME/.hawk_config"
 OUTPUT_FILE="Output.txt"
 REQUIRED_TOOLS=("waybackurls" "gf" "uro" "Gxss" "kxss" "katana")
 
-# Function to check and install missing tools
+# Function to display help
+show_help() {
+  echo "HAWK: Hunting Automated Workflow Kit"
+  echo ""
+  echo "Usage: hawk <target-domain>"
+  echo ""
+  echo "Example:"
+  echo "  hawk example.com"
+  echo ""
+  echo "Note: Scans will take a long time."
+}
+
+# Automatically add HAWK to PATH
+add_to_path() {
+  local script_path
+  script_path=$(realpath "$0")
+  local target_path="/usr/local/bin/hawk"
+
+  if [ "$script_path" != "$target_path" ]; then
+    echo "[*] Adding HAWK to PATH for global use..."
+    sudo cp "$script_path" "$target_path"
+    sudo chmod +x "$target_path"
+    echo "[+] HAWK has been added to PATH. You can now run 'hawk' from anywhere."
+    exit 0
+  fi
+}
+
+# Check if script is in PATH, and add it if not
+if ! command -v hawk &>/dev/null; then
+  add_to_path
+fi
+
+# Check for help flag
+if [[ "$1" == "-h" ]]; then
+  show_help
+  exit 0
+fi
+
+# Ensure a target is provided
+if [ -z "$1" ]; then
+  echo "Error: No target domain provided."
+  show_help
+  exit 1
+fi
+
+TARGET="$1"
+echo "[*] Starting HAWK for $TARGET"
+echo "[*] Results will be saved to $OUTPUT_FILE"
+
+# Tool installation check
 check_tools() {
+  echo "[*] Checking required tools..."
   for tool in "${REQUIRED_TOOLS[@]}"; do
     if ! command -v "$tool" &>/dev/null; then
       echo "[*] $tool not found. Installing..."
@@ -25,6 +75,7 @@ check_tools() {
           pip install uro
           ;;
       esac
+      echo "[+] $tool installed."
     else
       echo "[*] $tool is already installed."
     fi
@@ -36,16 +87,6 @@ check_tools
 
 # Ensure the output file is empty
 > $OUTPUT_FILE
-
-# Check if a target domain is provided
-if [ -z "$1" ]; then
-  echo "Usage: $0 <target-domain>"
-  exit 1
-fi
-
-TARGET="$1"
-echo "[*] Starting HAWK for $TARGET"
-echo "[*] Results will be saved to $OUTPUT_FILE"
 
 # Step 1: Gather URLs
 echo "[*] Gathering URLs..."
@@ -62,7 +103,7 @@ fi
 
 # Gather URLs from OTX
 echo "  [+] From OTX..." >> $OUTPUT_FILE
-otx_output=$(curl -s -H "X-OTX-API-KEY: $OTX_API_KEY" \
+otx_output=$(curl -s -H "X-OTX-API-KEY: $(grep 'OTX_API_KEY' "$CONFIG_FILE" | cut -d'=' -f2)" \
   "https://otx.alienvault.com/api/v1/indicators/domain/$TARGET/url_list" \
   | jq -r '.url_list[].url' 2>/dev/null)
 if [ -z "$otx_output" ]; then
