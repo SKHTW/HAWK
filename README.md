@@ -110,7 +110,7 @@ License
 This project is licensed under the MIT License. See the LICENSE file for details.
 
 Summary of Updates
-Included global execution capability.
-Simplified usage with hawk -h for help.
-Added automatic tool installation and API key configuration.
-Enhanced readability for prerequisites, usage, and output.
+Global execution capability.
+Simple hawk -h help feature.
+Automatic tool installation and API key configuration.
+Clear output and usage instructions.
