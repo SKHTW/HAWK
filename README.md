@@ -11,7 +11,8 @@ Real-Time Feedback:
 
 Watch as URLs are gathered and processed live in the terminal.
 Monitor elapsed time for each stage of the scan.
-Automated URL Collection:
+
+**Automated URL Collection**:
 
 Sources include:
 Wayback Machine
@@ -31,6 +32,7 @@ Simple help flag (-h) for usage instructions.
 Seamless Updates:
 
 Update to the latest version with the -update flag.
+
 API keys remain preserved during updates.
 
 
@@ -40,48 +42,43 @@ Clone the repository:
 
 git clone https://github.com/yourusername/HAWK.git
 cd HAWK
+
 Make the script executable:
-
-
 chmod +x hawk.sh
+
 Run the script:
-
-
 ./hawk.sh
-Add HAWK to your PATH: The script will automatically add itself to /usr/local/bin for global usage on first run.
+
+Add HAWK to your PATH: 
+The script will automatically add itself to /usr/local/bin for global usage on first run.
 
 Usage
-
 Basic Usage
 
 To scan a target domain:
 hawk <target-domain>
 
 Help
+
 For usage instructions:
 hawk -h
 
 Update
+
 To update HAWK to the latest version:
-
-
 hawk -update
+
 Configuration
 HAWK requires an API key for OTX (Open Threat Exchange). The script will prompt you for this key during its first run. The key is stored in ~/.hawk_config for future use and is not overwritten during updates.
 
 Alternatively, you can manually add your key:
-
 Open the configuration file:
-
 nano ~/.hawk_config
-Add your API key:
 
+Add your API key:
 OTX_API_KEY=<your-api-key>
 
-
 Features in Action
-Live Feedback:
-
 As URLs are gathered and processed, they are displayed in real-time.
 For example:
 
@@ -111,8 +108,8 @@ https://example.com/page1?input=
 
 https://example.com/page1?input=<script>alert(1)</script>
 Example Workflow
-Run HAWK:
 
+Run HAWK:
 hawk xss-game.appspot.com
 Review Results: Open Output.txt to see potential XSS patterns and vulnerabilities.
 
