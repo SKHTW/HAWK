@@ -50,14 +50,35 @@ echo "[*] Results will be saved to $OUTPUT_FILE"
 # Step 1: Gather URLs
 echo "[*] Gathering URLs..."
 echo "## URL Gathering ##" >> $OUTPUT_FILE
+
+# Gather URLs from Wayback Machine
 echo "  [+] From Wayback Machine..."
-echo "$TARGET" | waybackurls >> $OUTPUT_FILE
+wayback_output=$(echo "$TARGET" | waybackurls 2>/dev/null)
+if [ -z "$wayback_output" ]; then
+  echo "[-] No URLs found from Wayback Machine for $TARGET" >> $OUTPUT_FILE
+else
+  echo "$wayback_output" >> $OUTPUT_FILE
+fi
+
+# Gather URLs from OTX
 echo "  [+] From OTX..." >> $OUTPUT_FILE
-curl -s -H "X-OTX-API-KEY: $OTX_API_KEY" \
-"https://otx.alienvault.com/api/v1/indicators/domain/$TARGET/url_list" \
-| jq -r '.url_list[].url' >> $OUTPUT_FILE
+otx_output=$(curl -s -H "X-OTX-API-KEY: $OTX_API_KEY" \
+  "https://otx.alienvault.com/api/v1/indicators/domain/$TARGET/url_list" \
+  | jq -r '.url_list[].url' 2>/dev/null)
+if [ -z "$otx_output" ]; then
+  echo "[-] No URLs found from OTX for $TARGET" >> $OUTPUT_FILE
+else
+  echo "$otx_output" >> $OUTPUT_FILE
+fi
+
+# Gather URLs from Katana
 echo "  [+] From Katana..." >> $OUTPUT_FILE
-katana -u "$TARGET" -d 10 -jc -silent >> $OUTPUT_FILE
+katana_output=$(katana -u "$TARGET" -d 10 -jc -silent 2>/dev/null)
+if [ -z "$katana_output" ]; then
+  echo "[-] No URLs found from Katana for $TARGET" >> $OUTPUT_FILE
+else
+  echo "$katana_output" >> $OUTPUT_FILE
+fi
 
 # Step 2: Combine and deduplicate URLs
 echo "[*] Combining and deduplicating URLs..."
