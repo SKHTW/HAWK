@@ -1,116 +1,138 @@
-HAWK: Hunting Automated Workflow Kit
-Description
-HAWK (Hunting Automated Workflow Kit) is a streamlined tool for discovering and assessing potential XSS vulnerabilities. It automates the process of URL harvesting, filtering, and testing using powerful third-party tools. HAWK simplifies recon and testing, saving results in Output.txt for manual or automated analysis.
+**HAWK: Hunting Automated Workflow Kit**
 
-Features
-Global access: Run HAWK from anywhere in your terminal.
-Simple help flag: hawk -h displays usage instructions and notes scan duration.
-Automated URL gathering from:
+**Description**
+HAWK (Hunting Automated Workflow Kit) is a powerful tool designed to automate the discovery and assessment of potential XSS vulnerabilities. By integrating several specialized tools into a seamless workflow, HAWK simplifies the process of finding and analyzing vulnerable endpoints.
+
+With live progress feedback and an elapsed time tracker, HAWK keeps you informed at every step, making vulnerability scanning efficient and transparent.
+
+**Features**
+
+Real-Time Feedback:
+
+Watch as URLs are gathered and processed live in the terminal.
+Monitor elapsed time for each stage of the scan.
+Automated URL Collection:
+
+Sources include:
 Wayback Machine
 OTX (Open Threat Exchange)
 Katana
-Filters URLs with gf xss, cleans them with uro, and tests them with Gxss and kxss.
-Automatically installs and configures required tools on first use.
-Results saved to Output.txt in the current directory.
-Prerequisites
-Supported OS: Linux (e.g., ParrotOS, Kali, Ubuntu).
-Required Tools:
-Waybackurls
-Katana
-Gf
-Uro
-Gxss
-Kxss
-API Key for OTX:
-Create an account and generate an API key at OTX AlienVault.
-Add the key during the script's first run or manually in the configuration file (~/.hawk_config).
+URL Processing and XSS Testing:
+
+Filters with gf xss for potential XSS patterns.
+Cleans and deduplicates with uro.
+Tests for vulnerabilities using Gxss and kxss.
+
+Ease of Use:
+Global access: Run hawk from any directory.
+
+Simple help flag (-h) for usage instructions.
+
+Seamless Updates:
+
+Update to the latest version with the -update flag.
+API keys remain preserved during updates.
+
+
 Installation
 Clone the repository:
 
-bash
-Copy
-Edit
+
 git clone https://github.com/yourusername/HAWK.git
 cd HAWK
 Make the script executable:
 
-bash
-Copy
-Edit
+
 chmod +x hawk.sh
-Add to PATH: Run the script once, and it will automatically add itself to /usr/local/bin, allowing global execution:
+Run the script:
 
-bash
-Copy
-Edit
+
 ./hawk.sh
+Add HAWK to your PATH: The script will automatically add itself to /usr/local/bin for global usage on first run.
+
 Usage
-Run the script with a target domain:
 
-bash
-Copy
-Edit
+Basic Usage
+
+To scan a target domain:
 hawk <target-domain>
-Example:
 
-bash
-Copy
-Edit
-hawk xss-game.appspot.com
-For help:
-
-bash
-Copy
-Edit
+Help
+For usage instructions:
 hawk -h
-Configuration
-The script will prompt for an OTX API key during its first run.
-Alternatively, manually add the API key to the configuration file:
-bash
-Copy
-Edit
-nano ~/.hawk_config
-Add:
-makefile
-Copy
-Edit
-OTX_API_KEY=<your-otx-api-key>
-Next Steps
-Manual Testing:
-Open Output.txt to review and validate suspicious URLs.
-Further Automation:
-Use tools like XSStrike or XSpear for advanced XSS testing.
-Example Output
-plaintext
-Copy
-Edit
-## URL Gathering ##
-https://xss-game.appspot.com/
-https://xss-game.appspot.com/static/game.js
 
-## Deduplicated URLs ##
-https://xss-game.appspot.com/
-https://xss-game.appspot.com/static/game.js
+Update
+To update HAWK to the latest version:
+
+
+hawk -update
+Configuration
+HAWK requires an API key for OTX (Open Threat Exchange). The script will prompt you for this key during its first run. The key is stored in ~/.hawk_config for future use and is not overwritten during updates.
+
+Alternatively, you can manually add your key:
+
+Open the configuration file:
+
+nano ~/.hawk_config
+Add your API key:
+
+OTX_API_KEY=<your-api-key>
+
+
+Features in Action
+Live Feedback:
+
+As URLs are gathered and processed, they are displayed in real-time.
+For example:
+
+[+] From Wayback Machine...
+  Found URL: https://example.com/page1
+  Found URL: https://example.com/page2
+Elapsed Time Tracker:
+
+After each stage, the script displays how long the process has been running:
+
+[*] Elapsed Time: 00:05:32
+Output File:
+
+All results are saved to Output.txt, organized into sections such as:
+
+## URL Gathering ##
+https://example.com/page1
+https://example.com/page2
 
 ## GF XSS Patterns ##
-https://xss-game.appspot.com/?input=
-
-## Cleaned URLs (uro) ##
-https://xss-game.appspot.com/?input=
+https://example.com/page1?input=
 
 ## Reflected Parameters (Gxss) ##
-https://xss-game.appspot.com/?input=
+https://example.com/page1?input=
 
 ## Potential XSS Vulnerabilities (kxss) ##
-https://xss-game.appspot.com/?input=<script>alert(1)</script>
-Limitations
-Focused exclusively on XSS vulnerabilities.
-Results require manual validation or further automation for accuracy.
-License
+
+https://example.com/page1?input=<script>alert(1)</script>
+Example Workflow
+Run HAWK:
+
+hawk xss-game.appspot.com
+Review Results: Open Output.txt to see potential XSS patterns and vulnerabilities.
+
+**Manual or Automated Testing**:
+
+Use tools like XSStrike or XSpear for deeper XSS testing.
+Combine results with custom scripts for further analysis.
+
+**Limitations**
+
+XSS Focused: HAWK is specialized for XSS testing and does not scan for other types of vulnerabilities.
+Manual Validation: Results require manual validation or further automation to confirm actual vulnerabilities.
+
+**License**
+
 This project is licensed under the MIT License. See the LICENSE file for details.
 
-Summary of Updates
-Global execution capability.
-Simple hawk -h help feature.
-Automatic tool installation and API key configuration.
-Clear output and usage instructions.
+
+**Contributing**
+
+Contributions are welcome! If you’d like to add features, improve the script, or report issues, feel free to submit a pull request or open an issue on GitHub.
+
+Let’s secure the web together! 🚀
