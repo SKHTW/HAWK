@@ -40,7 +40,7 @@ Installation
 Clone the repository:
 
 
-git clone https://github.com/yourusername/HAWK.git
+git clone https://github.com/SKHTW/HAWK.git
 cd HAWK
 
 Make the script executable:
