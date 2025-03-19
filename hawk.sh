@@ -134,7 +134,7 @@ show_help() {
   echo ""
   echo "Options:"
   echo "  -h          Show this help message."
-  echo "  -update     Update HAWK to the latest version."
+  echo "  --update    Update HAWK to the latest version."
   echo "  -config     Edit configuration settings."
   echo ""
   echo "Note: Scans may consume significant disk space and take a long time to complete."
@@ -172,7 +172,7 @@ configure_settings() {
 if [[ "$1" == "-h" ]]; then
   show_help
   exit 0
-elif [[ "$1" == "-update" ]]; then
+elif [[ "$1" == "--update" ]]; then
   update_hawk
   exit 0
 elif [[ "$1" == "-config" ]]; then
