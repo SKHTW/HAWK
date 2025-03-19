@@ -30,7 +30,7 @@ With real-time progress feedback and an elapsed time tracker, HAWK provides clea
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/SKHTW/HAWK.git](https://github.com/SKHTW/HAWK.git)
+    git clone https://github.com/SKHTW/HAWK.git
     cd HAWK
     ```
 2.  **Make the script executable:**
