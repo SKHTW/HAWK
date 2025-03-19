@@ -28,7 +28,7 @@ load_config() {
     echo "Enter the path to install tools (e.g., /usr/local/bin):"
     read -r TOOL_INSTALL_PATH
     echo "Saving Tool Install Path..."
-    echo "TOOL_INSTALL_PATH=\"$TOOL_INSTALL_PATH\"" >> "$CONFIG_FILE"
+    echo "TOOL_INSTALL_PATH=\"$TOOL_INSTALL_PATH\"" > "$CONFIG_FILE"
   fi
 }
 
@@ -38,8 +38,17 @@ check_tools() {
     if ! command -v "$tool" &>/dev/null; then
       echo "[*] $tool not found. Installing..."
       case $tool in
-        "waybackurls"|"gf"|"kxss")
-          GO111MODULE=on go install -v github.com/tomnomnom/$tool@latest
+        "waybackurls")
+          GO111MODULE=on go install github.com/tomnomnom/waybackurls@latest
+          if [ $? -eq 0 ]; then
+            mv "$HOME/go/bin/waybackurls" "$TOOL_INSTALL_PATH/waybackurls"
+          else
+            echo "[!] Failed to install waybackurls. Exiting."
+            exit 1
+          fi
+          ;;
+        "gf"|"kxss")
+          GO111MODULE=on go install github.com/tomnomnom/$tool@latest
           if [ $? -eq 0 ]; then
             mv "$HOME/go/bin/$tool" "$TOOL_INSTALL_PATH/$tool"
           else
@@ -57,7 +66,7 @@ check_tools() {
           fi
           ;;
         "uro")
-          pip install uro
+          pipx install uro
           if [ $? -ne 0 ]; then
             echo "[!] Failed to install uro. Exiting."
             exit 1
@@ -116,14 +125,13 @@ show_help() {
 
 # Update the script
 update_hawk() {
-  SCRIPT_URL="https://raw.githubusercontent.com/yourusername/HAWK/main/hawk.sh"
+  SCRIPT_URL="https://raw.githubusercontent.com/SKHTW/HAWK/main/hawk.sh"
   curl -sL "$SCRIPT_URL" -o "$(which hawk)" && chmod +x "$(which hawk)"
   if [ $? -ne 0 ]; then
     echo "[!] Failed to update HAWK."
   else
     echo "HAWK updated to the latest version."
   fi
-
 }
 
 # Parse flags and options
