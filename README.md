@@ -1,4 +1,4 @@
-Disclosure: Work In Progress, Right Now Need A Lot Of Space. Will Fix That Aspect. If website is large, can be over 1 TB of temp space. 
+Disclosure: Work In Progress.
 
 # HAWK: Hunting Automated Workflow Kit
 
