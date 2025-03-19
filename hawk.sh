@@ -5,10 +5,10 @@
 # Saves final results to a single file: Output.txt
 
 # Configuration
-CONFIG_FILE="$HOME/.hawk_config"
-OUTPUT_FILE="Output.txt"
-REQUIRED_TOOLS=("waybackurls" "gf" "uro" "kxss" "katana" "jq" "curl" "pv")
-START_TIME=$(date +%s)
+CONFIG_FILE="<span class="math-inline">HOME/\.hawk\_config"
+OUTPUT\_FILE\="Output\.txt"
+REQUIRED\_TOOLS\=\("waybackurls" "gf" "uro" "kxss" "katana" "jq" "curl" "pv"\)
+START\_TIME\=</span>(date +%s)
 TOOL_INSTALL_PATH=""
 
 # Load or prompt for OTX API Key and Tool Install Path
@@ -28,29 +28,41 @@ load_config() {
     echo "Enter the path to install tools (e.g., /usr/local/bin):"
     read -r TOOL_INSTALL_PATH
     echo "Saving Tool Install Path..."
-    echo "TOOL_INSTALL_PATH=\"$TOOL_INSTALL_PATH\"" > "$CONFIG_FILE"
-  fi
-}
-
-# Function to check and install missing tools
-check_tools() {
-  for tool in "${REQUIRED_TOOLS[@]}"; do
+    echo "TOOL_INSTALL_PATH=\"$TOOL_INSTALL_PATH\"" > "<span class="math-inline">CONFIG\_FILE"
+fi
+\}
+\# Function to check and install missing tools
+check\_tools\(\) \{
+for tool in "</span>{REQUIRED_TOOLS[@]}"; do
     if ! command -v "$tool" &>/dev/null; then
       echo "[*] $tool not found. Installing..."
       case $tool in
         "waybackurls")
           GO111MODULE=on go install github.com/tomnomnom/waybackurls@latest
           if [ $? -eq 0 ]; then
-            mv "$HOME/go/bin/waybackurls" "$TOOL_INSTALL_PATH/waybackurls"
+            if [[ -d "$TOOL_INSTALL_PATH" && -w "$TOOL_INSTALL_PATH" ]]; then
+              mv "$HOME/go/bin/waybackurls" "$TOOL_INSTALL_PATH/waybackurls"
+            else
+              echo "[!] Invalid tool installation path: $TOOL_INSTALL_PATH. Exiting."
+              exit 1
+            fi
           else
             echo "[!] Failed to install waybackurls. Exiting."
             exit 1
           fi
           ;;
         "gf"|"kxss")
-          GO111MODULE=on go install github.com/tomnomnom/$tool@latest
+          GO111MODULE=on go install github.com/Emoe/kxss@latest
+          if [[ "$tool" == "gf" ]]; then
+            GO111MODULE=on go install github.com/tomnomnom/gf@latest
+          fi
           if [ $? -eq 0 ]; then
-            mv "$HOME/go/bin/$tool" "$TOOL_INSTALL_PATH/$tool"
+            if [[ -d "$TOOL_INSTALL_PATH" && -w "$TOOL_INSTALL_PATH" ]]; then
+              mv "$HOME/go/bin/$tool" "$TOOL_INSTALL_PATH/$tool"
+            else
+              echo "[!] Invalid tool installation path: $TOOL_INSTALL_PATH. Exiting."
+              exit 1
+            fi
           else
             echo "[!] Failed to install $tool. Exiting."
             exit 1
@@ -59,7 +71,12 @@ check_tools() {
         "katana")
           GO111MODULE=on go install github.com/projectdiscovery/katana/cmd/katana@latest
           if [ $? -eq 0 ]; then
-            mv "$HOME/go/bin/katana" "$TOOL_INSTALL_PATH/katana"
+            if [[ -d "$TOOL_INSTALL_PATH" && -w "$TOOL_INSTALL_PATH" ]]; then
+              mv "$HOME/go/bin/katana" "$TOOL_INSTALL_PATH/katana"
+            else
+              echo "[!] Invalid tool installation path: $TOOL_INSTALL_PATH. Exiting."
+              exit 1
+            fi
           else
             echo "[!] Failed to install katana. Exiting."
             exit 1
@@ -96,15 +113,14 @@ check_tools() {
       esac
       echo "[*] $tool installed successfully."
     else
-      echo "[*] $tool is already installed."
-    fi
-  done
-}
-
-# Add HAWK to PATH for global use
-add_to_path() {
-  SCRIPT_PATH=$(realpath "$0")
-  SCRIPT_DIR=$(dirname "$SCRIPT_PATH")
+      echo "[*] <span class="math-inline">tool is already installed\."
+fi
+done
+\}
+\# Add HAWK to PATH for global use
+add\_to\_path\(\) \{
+SCRIPT\_PATH\=</span>(realpath "<span class="math-inline">0"\)
+SCRIPT\_DIR\=</span>(dirname "$SCRIPT_PATH")
   if [[ ":$PATH:" != *":$SCRIPT_DIR:"* ]]; then
     echo "export PATH=\"\$PATH:$SCRIPT_DIR\"" >> "$HOME/.bashrc"
     export PATH="$PATH:$SCRIPT_DIR"
@@ -119,6 +135,7 @@ show_help() {
   echo "Options:"
   echo "  -h          Show this help message."
   echo "  -update     Update HAWK to the latest version."
+  echo "  -config     Edit configuration settings."
   echo ""
   echo "Note: Scans may consume significant disk space and take a long time to complete."
 }
@@ -126,11 +143,28 @@ show_help() {
 # Update the script
 update_hawk() {
   SCRIPT_URL="https://raw.githubusercontent.com/SKHTW/HAWK/main/hawk.sh"
-  curl -sL "$SCRIPT_URL" -o "$(which hawk)" && chmod +x "$(which hawk)"
+  curl -sL "<span class="math-inline">SCRIPT\_URL" \-o "</span>(which hawk)" && chmod +x "$(which hawk)"
   if [ $? -ne 0 ]; then
     echo "[!] Failed to update HAWK."
   else
     echo "HAWK updated to the latest version."
+  fi
+}
+
+# Configure settings
+configure_settings() {
+  echo "Current OTX API Key: $OTX_API_KEY"
+  read -p "Enter new OTX API Key (leave blank to keep current): " NEW_OTX_API_KEY
+  if [[ -n "$NEW_OTX_API_KEY" ]]; then
+    OTX_API_KEY="$NEW_OTX_API_KEY"
+    echo "OTX_API_KEY=\"$OTX_API_KEY\"" > "$CONFIG_FILE"
+  fi
+
+  echo "Current Tool Installation Path: $TOOL_INSTALL_PATH"
+  read -p "Enter new Tool Installation Path (leave blank to keep current): " NEW_TOOL_INSTALL_PATH
+  if [[ -n "$NEW_TOOL_INSTALL_PATH" ]]; then
+    TOOL_INSTALL_PATH="$NEW_TOOL_INSTALL_PATH"
+    echo "TOOL_INSTALL_PATH=\"$TOOL_INSTALL_PATH\"" > "$CONFIG_FILE"
   fi
 }
 
@@ -140,6 +174,9 @@ if [[ "$1" == "-h" ]]; then
   exit 0
 elif [[ "$1" == "-update" ]]; then
   update_hawk
+  exit 0
+elif [[ "$1" == "-config" ]]; then
+  configure_settings
   exit 0
 fi
 
