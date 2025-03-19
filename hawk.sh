@@ -39,7 +39,7 @@ check_tools() {
       echo "[*] $tool not found. Installing..."
       case $tool in
         "waybackurls"|"gf"|"kxss")
-          GO111MODULE=on go install github.com/tomnomnom/$tool@latest
+          GO111MODULE=on go install -v github.com/tomnomnom/$tool@latest
           if [ $? -eq 0 ]; then
             mv "$HOME/go/bin/$tool" "$TOOL_INSTALL_PATH/$tool"
           else
