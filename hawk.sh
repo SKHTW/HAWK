@@ -211,7 +211,6 @@ curl -s -H "X-OTX-API-KEY: $OTX_API_KEY" \
 
 echo "  [+] From Katana..."
 katana -u "$TARGET" -d 3 -jc -silent | pv -l > >(tee -a "$OUTPUT_FILE")
-
 # Step 2: Filter URLs with gf xss
 echo "[*] Filtering for potential XSS patterns with gf..."
 cat "$OUTPUT_FILE" | sort -u | gf xss | pv -l > >(tee -a "$OUTPUT_FILE")
